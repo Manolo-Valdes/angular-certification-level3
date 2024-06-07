@@ -25,5 +25,13 @@ on(ZipCodeActions.addConditionsAndZip,
         )];
         return {...store, conditionsAndZips:value} 
 }
+),on(ZipCodeActions.removeLocationByIndex,
+    (store, payload)=>{
+        console.log('removing',payload);
+        const value = [...store.conditionsAndZips.filter((v, i) =>
+            i !== payload.index
+        )];
+        return {...store, conditionsAndZips:value} 
+}
 )
 );

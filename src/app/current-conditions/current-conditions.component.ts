@@ -28,6 +28,11 @@ export class CurrentConditionsComponent implements OnInit {
     this.router.navigate(['/forecast', zipcode])
   }
 
+  removeLocation(index:number)
+  {
+    console.log('removing page', index);
+   this.store.dispatch(ZipCodeActions.removeLocationByIndex({index})) ;
+  }
   removeConditionsAndZip(value:ConditionsAndZip)
   {
     this.store.dispatch(ZipCodeActions.removeConditionsAndZip(value));

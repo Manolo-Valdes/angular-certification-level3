@@ -1,0 +1,12 @@
+<div class="tabsView" *ngIf="visible">
+    <ul>
+      @for (page of pages; track index; let index = $index) {
+      <li (click)="selectPage(index)" [class.active]="page.active">
+        {{ page.title }} <span class="close" (click)="removePage(index)">&times;</span>
+      </li>
+      }
+    </ul>
+  
+    <ng-content></ng-content>
+</div>
+  

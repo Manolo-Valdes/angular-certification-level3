@@ -56,10 +56,16 @@ addzipCodeLocation$ = createEffect(
     ),{ dispatch: false }
 );
 
-removezipCodeLocation$ = createEffect(
+removeLocationByzipCode$ = createEffect(
     ()=> this.actions$.pipe(
         ofType(ZipCodeActions.removeConditionsAndZip),
         map(value => this.locationService.removeLocation(value.zip))
+    ),{ dispatch: false }
+);
+removeLocationByIndex$ = createEffect(
+    ()=> this.actions$.pipe(
+        ofType(ZipCodeActions.removeLocationByIndex),
+        map(value => this.locationService.removeLocationByIndex(value.index))
     ),{ dispatch: false }
 );
 

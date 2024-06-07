@@ -1,7 +1,9 @@
-<div>
-  <div *ngFor="let location of currentConditionsByZip$ | async" class="well flex" >
-    <div>
-      <h3>{{location.data.name}} ({{location.zip}})</h3>
+<app-tab-view (pageRemoved)="removeLocation($event)">
+  <app-tab-page *ngFor="let location of currentConditionsByZip$ | async" 
+  [title]="location.data.name +'('+ location.zip +')'"
+  >
+    <div class="well flex">
+      <div>
       <h4>Current conditions: {{location.data.weather[0].main}}</h4>
       <h4>Temperatures today:</h4>
       <p>
@@ -14,8 +16,8 @@
       </p>
     </div>
     <div>
-      <span class="close" (click)="removeConditionsAndZip(location)">&times;</span>
       <img [src]="weatherService.getWeatherIcon(location.data.weather[0].id)">
     </div>
- </div>
-</div>
+  </div>
+  </app-tab-page>
+</app-tab-view>

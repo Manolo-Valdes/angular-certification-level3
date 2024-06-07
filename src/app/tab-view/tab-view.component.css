@@ -1,0 +1,36 @@
+.tabsView {
+    margin-bottom: 15px;
+  }
+  
+  ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 4px;
+    list-style: none;
+  }
+  
+  li {
+    align-items: center;
+    border-radius: 4px 4px 0 0;
+    border: 1px solid #a7bff7;
+    bottom: -1px;
+    display: flex;
+    gap: 8px;
+    padding: 8px 16px;
+    position: relative;
+  }
+  
+  li:hover:not(.active) {
+    background-color: #a8c7ea;
+    cursor: pointer;
+  }
+  
+  li.active {
+    border-right: 2px solid #187ced;
+    border-left: 2px solid #187ced;
+    border-top: 2px solid #187ced;
+    border-bottom: 0px ;
+    background-color: #b8d3f3;
+  }
+  

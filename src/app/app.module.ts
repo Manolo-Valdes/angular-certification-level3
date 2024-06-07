@@ -18,6 +18,8 @@ import { StoreModule } from '@ngrx/store';
 import { zipCodeReducer } from './store/zipcode.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { ZipCodeEffects } from './store/zipcode.effects';
+import { TabPageComponent } from './tab-page/tab-page.component';
+import { TabViewComponent } from './tab-view/tab-view.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { ZipCodeEffects } from './store/zipcode.effects';
     ZipcodeEntryComponent,
     ForecastsListComponent,
     CurrentConditionsComponent,
+    TabPageComponent,
+    TabViewComponent,
     MainPageComponent
   ],
   imports: [
