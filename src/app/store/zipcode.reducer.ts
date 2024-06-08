@@ -2,13 +2,16 @@ import { createReducer, on } from "@ngrx/store";
 import { ZipCodeActions } from "./zipcode.actions";
 import { ConditionsAndZip } from '../conditions-and-zip.type';
 import { Forecast } from "app/forecasts-list/forecast.type";
-import { STAGE_KEY } from "./meta.reducer";
 
 export interface ForecastRecord {
-    foreCast: Forecast;
-    date: number;
-    zip: string;
-  }
+    foreCast: Forecast,
+    timeOut: number,
+    zip: string
+}
+export interface locations {
+    conditionsAndZip:ConditionsAndZip,
+    timeOut: number
+}
 export interface ZipCodeStoreData{
     conditionsAndZips: ConditionsAndZip[],
     foreCastRecords: ForecastRecord[],

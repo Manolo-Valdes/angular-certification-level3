@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, filter, mergeMap, tap,withLatestFrom, delay} from 'rxjs/operators';
+import { map, filter, mergeMap, tap,withLatestFrom, delay, timeout} from 'rxjs/operators';
 
 import { WeatherService } from "app/weather.service";
 import { ZipCodeActions } from "./zipcode.actions";
@@ -48,7 +48,7 @@ getForecast$ = createEffect(
             filter(({record , timeOut})=>{
                 if (record)
                     {
-                        return (Date.now() - record.date) > timeOut;
+                        return (Date.now() - record.timeOut) > timeOut;
                     }
                 return true;
             }),
@@ -62,7 +62,7 @@ getForecast$ = createEffect(
               map((data) => 
                 ({ 
                     foreCast: data,
-                    date: Date.now(),
+                    timeOut: Date.now(),
                     zip: value.code                
                 })))
           ),
