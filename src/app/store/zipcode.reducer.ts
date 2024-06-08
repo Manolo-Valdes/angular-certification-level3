@@ -6,7 +6,7 @@ import { STAGE_KEY } from "./meta.reducer";
 
 export interface ForecastRecord {
     foreCast: Forecast;
-    date: Date;
+    date: number;
     zip: string;
   }
 export interface ZipCodeStoreData{
@@ -60,7 +60,7 @@ export const zipCodeReducer = createReducer(
     }
     ),on(ZipCodeActions.addForeCastRecord,
     (store, payload)=>{
-        console.log('adding',payload);
+        console.log('adding ForeCastRecord',payload);
         const foreCastRecords=[...store.foreCastRecords.filter(v=>
             v.zip !==payload.zip
         ), payload]
