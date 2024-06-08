@@ -1,5 +1,6 @@
 import { createActionGroup, emptyProps, props } from "@ngrx/store";
 import { ConditionsAndZip } from "app/conditions-and-zip.type";
+import { ForecastRecord } from "./zipcode.reducer";
 
 
 export const ZipCodeActions = createActionGroup(
@@ -14,5 +15,8 @@ export const ZipCodeActions = createActionGroup(
             'AddedSuccess':props<{code:string}>(),
             'Remove':props<{code:string}>(),
             'RemovedSuccess':props<{code:string}>(),
+            'GetForeCast':props<{code:string, timeOut:number}>(),
+            'AddForeCastRecord':props<ForecastRecord>(),
+            'UpdateTimeOut':props<{timeOut:number}>(),
         }
     });

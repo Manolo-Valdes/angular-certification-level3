@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import {catchError, map, filter,concatMap, mergeMap, tap,withLatestFrom, concatMapTo, flatMap} from 'rxjs/operators';
+import {catchError, map, filter,concatMap, mergeMap, tap,withLatestFrom, concatMapTo, flatMap, mapTo} from 'rxjs/operators';
 
 import { WeatherService } from "app/weather.service";
 import { ZipCodeActions } from "./zipcode.actions";
 import { LocationService } from "app/location.service";
-import {selectZipCodes} from "./zipcode.selectors"
+import {selectForeCastRecord, selectZipCodes} from "./zipcode.selectors"
 import { Store } from "@ngrx/store";
 import { of } from "rxjs";
 import { ConditionsAndZip } from "app/conditions-and-zip.type";
@@ -20,7 +20,7 @@ initialLoad$ = createEffect(
         tap(()=> console.log('initial load from local storage.;')),
         flatMap(()=> this.locationService.getLocations()),
         filter(code=> code!==null),
-        tap(code => console.log('loadoing', code)),
+        tap(code => console.log('loading', code)),
         mergeMap(code =>
             this.weatherService.currentConditions$(code).pipe(
                 map(value =>{
@@ -36,19 +36,19 @@ initialLoad$ = createEffect(
 addzipCodeLocation$ = createEffect(
     ()=>this.actions$.pipe(
         ofType(ZipCodeActions.add),
-        tap(({ code })=> console.log('Adding', code)),
+        tap((value)=> console.log('Adding', value.code)),
         withLatestFrom(this.store.select(selectZipCodes)),        
-        tap(([{ code }, codes]) => console.log('Adding', code , codes)),
-        filter(([{ code }, codes]) => codes.indexOf(code)===-1),
-        tap(([{ code }, codes]) => console.log('Adding', code , codes)),
-        mergeMap(([{ code }, codes]) =>
-            this.weatherService.currentConditions$(code).pipe(
-                tap(value => console.log('Adding', value)),
-                map(value =>{
-                    const conditionsAndZip:ConditionsAndZip = { zip: code, data:value };
+        tap(([value, codes]) => console.log('Adding', value.code , codes)),
+        filter(([value, codes]) => codes.indexOf(value.code)===-1),
+        tap(([value, codes]) => console.log('Adding', value.code , codes)),
+        mergeMap(([value, codes]) =>
+            this.weatherService.currentConditions$(value.code).pipe(
+                tap(data => console.log('Adding', data)),
+                map(data =>{
+                    const conditionsAndZip:ConditionsAndZip = { zip: value.code, data:data };
                     console.log(conditionsAndZip);
                     this.store.dispatch(ZipCodeActions.addConditionsAndZip(conditionsAndZip)) ;
-                    this.locationService.addLocation(code);
+                    this.locationService.addLocation(value.code);
                 }
                 )
             )
@@ -74,5 +74,32 @@ addedZipsuccess$ = createEffect(
         ofType(ZipCodeActions.addedSuccess),
         tap(({ code }) => this.locationService.addLocation(code))
     )
+);
+
+getForecast$ = createEffect(
+    ()=> this.actions$.pipe(
+        ofType(ZipCodeActions.getForeCast),
+        tap(value=> console.log('getting forecast from:', value.code)),
+        mergeMap(value => this.store.select(selectForeCastRecord(value.code))
+        .pipe(
+            filter(record=>{
+                if (record)
+                    return (Date.now() - record.date.getMilliseconds()) > value.timeOut;
+                return true;
+            }),
+            map(record => value),
+        )
+        ),
+        mergeMap(value =>
+            this.weatherService.getForecast(value.code).pipe(
+              map((data) => 
+                ZipCodeActions.addForeCastRecord({ 
+                    foreCast: data,
+                    date: new Date(),
+                    zip: value.code                
+                })),
+            )
+          )        
+    ) 
 );
 }

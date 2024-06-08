@@ -39,7 +39,7 @@ import { TabViewComponent } from './tab-view/tab-view.component';
     routing,
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
     StoreModule.forRoot({zipCode:zipCodeReducer}),
-    EffectsModule.forRoot([ZipCodeEffects])
+    EffectsModule.forRoot([ZipCodeEffects]),
   ],
   providers: [LocationService, WeatherService],
   bootstrap: [AppComponent]
