@@ -15,7 +15,7 @@ constructor(private actions$:Actions,private store:Store , private weatherServic
 init$= createEffect(
     ()=>this.actions$.pipe(
         ofType(ZipCodeActions.init),
-        delay(300),
+      //  delay(300),
         map(()=>ZipCodeActions.initialLoad()),
     )
 );

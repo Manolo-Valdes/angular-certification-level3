@@ -1,4 +1,4 @@
-import { createAction, createFeatureSelector, createSelector } from "@ngrx/store";
+import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { ZipCodeStoreData } from "./zipcode.reducer";
 
 
@@ -31,3 +31,12 @@ export const selectForeCastRecord = (zipcode: string) =>
             return state.foreCastRecords.find((x) => x.zip === zipcode);
         return undefined;
     });
+
+export const selectTimeOut = createSelector(
+    selectZipCodeState,
+    state => {
+        console.log('selectTimeOut state',state);
+        if (state !== undefined)
+            return state.timeOut;
+        return 0;
+});

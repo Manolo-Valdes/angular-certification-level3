@@ -27,7 +27,9 @@ export const STAGE_KEY = "ngrxState";
             case ZipCodeActions.addConditionsAndZip.type:
             case ZipCodeActions.removeConditionsAndZip.type:
             case ZipCodeActions.removeLocationByIndex.type:
-              case ZipCodeActions.addForeCastRecord.type:
+            case ZipCodeActions.addForeCastRecord.type:
+            case ZipCodeActions.updateTimeOut.type:
+                console.log("saving state..");
                 localStorage.setItem(STAGE_KEY, JSON.stringify(nextState));
                 break;
       }

@@ -14,9 +14,9 @@ import { LocationService } from './location.service';
 export class AppComponent implements OnInit {
 
     constructor(private store:Store) {
-      this.store.subscribe((store)=> console.log(store));
     }
-  ngOnInit(): void {
+
+    ngOnInit(): void {
    this.store.dispatch(ZipCodeActions.init());
   }
 }
