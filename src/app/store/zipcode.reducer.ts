@@ -44,11 +44,15 @@ export const zipCodeReducer = createReducer(
     }
     ),on(ZipCodeActions.removeLocationByIndex,
     (store, payload)=>{
-        console.log('removing',payload);
-        const value = [...store.conditionsAndZips.filter((v, i) =>
-            i !== payload.index
-        )];
-        return {...store, conditionsAndZips:value} 
+        console.log('removing location',payload);
+        let selector =(v:ConditionsAndZip, i:number) => i === payload.index;
+        const item = store.conditionsAndZips.find(selector);
+        selector =(v:ConditionsAndZip, i:number) => i !== payload.index;
+        const conditionsAndZips = [...store.conditionsAndZips.filter(selector)];
+        const foreCastRecords=[...store.foreCastRecords.filter(v=>
+            v.zip !==item.zip
+        )]
+        return {...store, conditionsAndZips , foreCastRecords} 
     }
     ),on(ZipCodeActions.addForeCastRecord,
     (store, payload)=>{
@@ -58,23 +62,7 @@ export const zipCodeReducer = createReducer(
         ), payload]
         return {...store,foreCastRecords}
     }
-    ),on(ZipCodeActions.removeForeCastRecord,
-        (store, payload)=>{
-            console.log('removing ForeCastRecord',payload);
-            const conditions = store.conditionsAndZips.filter((v, i) =>
-                i === payload.index
-            )
-            if (conditions.length > 0)
-                {
-                    const condition = conditions[0];
-                    const foreCastRecords=[...store.foreCastRecords.filter(v=>
-                        v.zip !==condition.zip
-                    )]
-                    return {...store,foreCastRecords}
-                }
-                return {...store};
-        }
-        ),on(ZipCodeActions.updateTimeOut,
+    ),on(ZipCodeActions.updateTimeOut,
     (store, payload)=>{
         return {...store,timeOut:payload.timeOut}
     }

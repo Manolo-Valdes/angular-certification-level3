@@ -70,12 +70,5 @@ getForecast$ = createEffect(
     )
 );
 
-removeForeCast$ = createEffect(
-    ()=> this.actions$.pipe(    
-        ofType(ZipCodeActions.removeLocationByIndex),
-        map((selector) => ZipCodeActions.removeForeCastRecord(selector))                    
- 
-   )
-);
 
 }
