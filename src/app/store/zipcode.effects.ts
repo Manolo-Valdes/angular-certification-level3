@@ -12,14 +12,6 @@ import { ConditionsAndZip } from "app/conditions-and-zip.type";
 export class ZipCodeEffects{
 constructor(private actions$:Actions,private store:Store , private weatherService: WeatherService){}
 
-init$= createEffect(
-    ()=>this.actions$.pipe(
-        ofType(ZipCodeActions.init),
-      //  delay(300),
-        map(()=>ZipCodeActions.initialLoad()),
-    )
-);
-
 addzipCodeLocation$ = createEffect(
     ()=>this.actions$.pipe(
         ofType(ZipCodeActions.add),

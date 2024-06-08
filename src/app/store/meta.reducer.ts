@@ -8,7 +8,7 @@ export const STAGE_KEY = "ngrxState";
   ): ActionReducer<ZipCodeStoreData> => {
     return (state, action) => {
       console.log(action.type)
-   /*   if (action.type === INIT || action.type === UPDATE) {
+      if (action.type === INIT || action.type === UPDATE) {
         const json = localStorage.getItem(STAGE_KEY);
         if (json) {
           try {
@@ -20,7 +20,7 @@ export const STAGE_KEY = "ngrxState";
             localStorage.removeItem(STAGE_KEY);
           }
         }
-      }*/
+      }
       const nextState = reducer(state, action);
       switch (action.type)
       {

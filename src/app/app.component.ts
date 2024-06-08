@@ -11,12 +11,6 @@ import { LocationService } from './location.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
 
-    constructor(private store:Store) {
-    }
-
-    ngOnInit(): void {
-   this.store.dispatch(ZipCodeActions.init());
-  }
 }

@@ -25,17 +25,6 @@ export const initialData:ZipCodeStoreData=
 
 export const zipCodeReducer = createReducer(
     initialData,
-    on(ZipCodeActions.initialLoad,
-        (store)=> {
-            const json = localStorage.getItem(STAGE_KEY);
-            if(json)
-                {
-                    const value:{zipCode:ZipCodeStoreData} = JSON.parse(json);
-                    return {...value.zipCode}
-                }
-                return {...store}
-        }
-    ),
     on(ZipCodeActions.addConditionsAndZip,
     (store, payload)=>{
         console.log('addConditionsAndZip',payload);
