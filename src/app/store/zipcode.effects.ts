@@ -4,7 +4,7 @@ import { map, filter, mergeMap, tap,withLatestFrom, delay} from 'rxjs/operators'
 
 import { WeatherService } from "app/weather.service";
 import { ZipCodeActions } from "./zipcode.actions";
-import {selectForeCastRecord, selectZipCodes} from "./zipcode.selectors"
+import {selectForeCastRecord, selectTimeOut, selectZipCodes} from "./zipcode.selectors"
 import { Store } from "@ngrx/store";
 import { ConditionsAndZip } from "app/conditions-and-zip.type";
 
@@ -41,10 +41,14 @@ getForecast$ = createEffect(
         tap(value=> console.log('getting forecast from:', value)),
         mergeMap(value => this.store.select(selectForeCastRecord(value.code))
         .pipe(
-            filter(record=>{
+            mergeMap(record => this.store.select(selectTimeOut)
+            .pipe(
+                map(timeOut=> ({record , timeOut}))
+            )),
+            filter(({record , timeOut})=>{
                 if (record)
                     {
-                        return (Date.now() - record.date) > value.timeOut;
+                        return (Date.now() - record.date) > timeOut;
                     }
                 return true;
             }),

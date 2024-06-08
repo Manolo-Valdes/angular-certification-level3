@@ -39,6 +39,7 @@
     "@types/jasmine": "~3.6.0",
     "@types/node": "^6.14.6",
     "blue-harvest": "^0.2.1",
+    "chromedriver": "^125.0.3",
     "jasmine": "~2.6.0",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",

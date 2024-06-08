@@ -27,6 +27,6 @@ export class ForecastsListComponent {
       this.zipcode = route.snapshot.params['zipcode'];
       console.log("zip code from route:", this.zipcode);
       this.forecast$ =this.store.select(selectForeCastRecord(this.zipcode)).pipe(map((x) => x?.foreCast));
-      this.store.dispatch(ZipCodeActions.getForeCast({code:this.zipcode, timeOut:(2*3600*1000) }));
+      this.store.dispatch(ZipCodeActions.getForeCast({code:this.zipcode}));
   }
 }

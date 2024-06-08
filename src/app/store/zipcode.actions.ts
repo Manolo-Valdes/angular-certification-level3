@@ -14,7 +14,7 @@ export const ZipCodeActions = createActionGroup(
             'AddedSuccess':props<{code:string}>(),
             'Remove':props<{code:string}>(),
             'RemovedSuccess':props<{code:string}>(),
-            'GetForeCast':props<{code:string, timeOut:number}>(),
+            'GetForeCast':props<{code:string}>(),
             'AddForeCastRecord':props<ForecastRecord>(),
             'UpdateTimeOut':props<{timeOut:number}>(),
         }
