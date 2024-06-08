@@ -12,7 +12,7 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
   @ContentChildren(TabPageComponent) pages: QueryList<TabPageComponent>;
 
 
-  protected visible:boolean=false
+  protected visible:boolean=true
   private sub:Subscription;
   removePage(index:number):void
   {
@@ -26,21 +26,33 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
   }
 
   ngAfterContentInit(): void {
-    this.sub = this.pages?.changes.subscribe(()=>{
-      this.visible = this.pages.length > 0;
-      console.log('pages visible', this.visible);
-      if (this.visible)
-        {
-          let last = this.pages.length -1;
-          setTimeout(() => {
-            this.selectPage(last);
-          },100);       
-        }
-      });
+    if (this.pages)
+      {
+        this.setUp(this.pages);
+        this.sub = this.pages.changes.subscribe((pages)=>{
+          this.setUp(pages)
+          });
+          }
   }
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
 
+  private setUp(pages:QueryList<TabPageComponent>):void
+{
+  this.visible = pages.length > 0;
+  console.log('pages visible', this.visible);
+  if (this.visible)
+    {
+      const hasActivePage = pages.find((t) => t.active);
+      if (!hasActivePage)
+        {
+          let last = pages.length -1;
+          setTimeout(() => {
+            this.selectPage(last);
+          },100);       
+        }
+    }
+}
 }
