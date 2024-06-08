@@ -7,6 +7,7 @@ export const ZipCodeActions = createActionGroup(
     {
         source:'zipCode',
         events:{
+            'Init':emptyProps(),
             'InitialLoad':emptyProps(),
             'AddConditionsAndZip':props<ConditionsAndZip>(),
             'RemoveLocationByIndex':props<{index:number}>(),

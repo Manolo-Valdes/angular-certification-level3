@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import {catchError, map, filter,concatMap, mergeMap, tap,withLatestFrom, concatMapTo, flatMap, mapTo} from 'rxjs/operators';
+import {catchError, map, filter,concatMap, mergeMap, tap,withLatestFrom, concatMapTo, flatMap, mapTo, delay} from 'rxjs/operators';
 
 import { WeatherService } from "app/weather.service";
 import { ZipCodeActions } from "./zipcode.actions";
@@ -9,27 +9,18 @@ import {selectForeCastRecord, selectZipCodes} from "./zipcode.selectors"
 import { Store } from "@ngrx/store";
 import { of } from "rxjs";
 import { ConditionsAndZip } from "app/conditions-and-zip.type";
+import { STAGE_KEY } from "./meta.reducer";
+import { ZipCodeStoreData, initialData } from "./zipcode.reducer";
 
 @Injectable()
 export class ZipCodeEffects{
 constructor(private actions$:Actions,private store:Store, private locationService:LocationService , private weatherService: WeatherService){}
 
-initialLoad$ = createEffect(
+init$= createEffect(
     ()=>this.actions$.pipe(
-        ofType(ZipCodeActions.initialLoad),
-        tap(()=> console.log('initial load from local storage.;')),
-        flatMap(()=> this.locationService.getLocations()),
-        filter(code=> code!==null),
-        tap(code => console.log('loading', code)),
-        mergeMap(code =>
-            this.weatherService.currentConditions$(code).pipe(
-                map(value =>{
-                    const conditionsAndZip:ConditionsAndZip = { zip: code, data:value };
-                    this.store.dispatch(ZipCodeActions.addConditionsAndZip(conditionsAndZip));
-                }
-                )
-            )
-        )  
+        ofType(ZipCodeActions.init),
+        delay(300),
+        tap(()=>this.store.dispatch(ZipCodeActions.initialLoad())),
     ),{ dispatch: false }
 );
 

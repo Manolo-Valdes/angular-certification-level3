@@ -7,6 +7,7 @@ export const selectZipCodeState = createFeatureSelector<ZipCodeStoreData>('zipCo
 export const selectConditionsAndZips = createSelector(
     selectZipCodeState,
     (state) =>{
+        console.log('selectConditionsAndZips state',state);
         if (state !== undefined)
             return state.conditionsAndZips;
         return [];
@@ -15,9 +16,8 @@ export const selectConditionsAndZips = createSelector(
 
 export const selectZipCodes = createSelector(selectZipCodeState, 
     state =>{
-        console.log('selector state',state);
+        console.log('selectZipCodes state',state);
     if (state !== undefined &&
-        state.conditionsAndZips !== undefined &&
         state.conditionsAndZips.length > 0)
         return state.conditionsAndZips.map((x) => x.zip);
     return [];

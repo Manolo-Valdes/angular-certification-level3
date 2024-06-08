@@ -2,6 +2,7 @@ import { createReducer, on } from "@ngrx/store";
 import { ZipCodeActions } from "./zipcode.actions";
 import { ConditionsAndZip } from '../conditions-and-zip.type';
 import { Forecast } from "app/forecasts-list/forecast.type";
+import { STAGE_KEY } from "./meta.reducer";
 
 export interface ForecastRecord {
     foreCast: Forecast;
@@ -13,7 +14,7 @@ export interface ZipCodeStoreData{
     foreCastRecords: ForecastRecord[],
     timeOut:number
 }
- const initialData:ZipCodeStoreData=
+export const initialData:ZipCodeStoreData=
  {
     conditionsAndZips:[],
     foreCastRecords:[],
@@ -24,8 +25,20 @@ export interface ZipCodeStoreData{
 
 export const zipCodeReducer = createReducer(
     initialData,
+    on(ZipCodeActions.initialLoad,
+        (store)=> {
+            const json = localStorage.getItem(STAGE_KEY);
+            if(json)
+                {
+                    const value:{zipCode:ZipCodeStoreData} = JSON.parse(json);
+                    return {...value.zipCode}
+                }
+                return {...store}
+        }
+    ),
     on(ZipCodeActions.addConditionsAndZip,
     (store, payload)=>{
+        console.log('addConditionsAndZip',payload);
         const value = [...store.conditionsAndZips, payload];
         return {...store, conditionsAndZips:value} 
     }

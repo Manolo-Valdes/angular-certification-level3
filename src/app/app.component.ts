@@ -17,6 +17,6 @@ export class AppComponent implements OnInit {
       this.store.subscribe((store)=> console.log(store));
     }
   ngOnInit(): void {
-   this.store.dispatch(ZipCodeActions.initialLoad());
+   this.store.dispatch(ZipCodeActions.init());
   }
 }

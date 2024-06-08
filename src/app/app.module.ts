@@ -20,6 +20,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { ZipCodeEffects } from './store/zipcode.effects';
 import { TabPageComponent } from './tab-page/tab-page.component';
 import { TabViewComponent } from './tab-view/tab-view.component';
+import { metaReducers } from './store/meta.reducer';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,7 @@ import { TabViewComponent } from './tab-view/tab-view.component';
     RouterModule,
     routing,
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
-    StoreModule.forRoot({zipCode:zipCodeReducer}),
+    StoreModule.forRoot({zipCode:zipCodeReducer}, {metaReducers}),
     EffectsModule.forRoot([ZipCodeEffects]),
   ],
   providers: [LocationService, WeatherService],
