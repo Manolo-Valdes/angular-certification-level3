@@ -1,68 +1,57 @@
 import { createReducer, on } from "@ngrx/store";
 import { ZipCodeActions } from "./zipcode.actions";
-import { ConditionsAndZip } from '../conditions-and-zip.type';
-import { Forecast } from "app/forecasts-list/forecast.type";
+import { initialData } from "./zipcode.models";
+import { Record} from "./zipcode.models"
 
-export interface ForecastRecord {
-    foreCast: Forecast,
-    timeOut: number,
-    zip: string
-}
-export interface locations {
-    conditionsAndZip:ConditionsAndZip,
-    timeOut: number
-}
-export interface ZipCodeStoreData{
-    conditionsAndZips: ConditionsAndZip[],
-    foreCastRecords: ForecastRecord[],
-    timeOut:number
-}
-export const initialData:ZipCodeStoreData=
- {
-    conditionsAndZips:[],
-    foreCastRecords:[],
-    timeOut:(2*3600*1000) //default value 2 hours  
- };
-
- const KEY="ngrxStore";
 
 export const zipCodeReducer = createReducer(
     initialData,
     on(ZipCodeActions.addConditionsAndZip,
     (store, payload)=>{
         console.log('addConditionsAndZip',payload);
-        const value = [...store.conditionsAndZips, payload];
-        return {...store, conditionsAndZips:value} 
-    }
-    ),on(ZipCodeActions.removeConditionsAndZip,
-    (store, payload)=>{
-        console.log('removing',payload);
-        const value = [...store.conditionsAndZips.filter(v=>
-            v.zip !==payload.zip
-        )];
-        return {...store, conditionsAndZips:value} 
+        const item:Record = {
+            conditionsAndZip:payload,
+            foreCast:null,
+            timeOut: Date.now(),
+        }
+        const records = [...store.records.filter(
+            (r)=> r.conditionsAndZip.zip !== payload.zip
+        ), item];
+        return {...store, records} 
     }
     ),on(ZipCodeActions.removeLocationByIndex,
     (store, payload)=>{
         console.log('removing location',payload);
-        let selector =(v:ConditionsAndZip, i:number) => i === payload.index;
-        const item = store.conditionsAndZips.find(selector);
-        selector =(v:ConditionsAndZip, i:number) => i !== payload.index;
-        const conditionsAndZips = [...store.conditionsAndZips.filter(selector)];
-        const foreCastRecords=[...store.foreCastRecords.filter(v=>
-            v.zip !==item.zip
-        )]
-        return {...store, conditionsAndZips , foreCastRecords} 
-    }
+        const records = [...store.records.filter(
+            (r,i)=> i !== payload.index
+        )];
+        return {...store, records} 
+     }
     ),on(ZipCodeActions.addForeCastRecord,
     (store, payload)=>{
-        console.log('adding ForeCastRecord',payload);
-        const foreCastRecords=[...store.foreCastRecords.filter(v=>
-            v.zip !==payload.zip
-        ), payload]
-        return {...store,foreCastRecords}
+        console.log('adding ForeCast',payload);
+        let item = store.records.find(
+            (r)=> r.conditionsAndZip.zip === payload.code
+        );
+        if (item)
+            {
+                item = {...item,foreCast:payload.foreCast,timeOut: Date.now()}
+            }
+        const records = [...store.records.filter(
+            (r)=> r.conditionsAndZip.zip !== payload.code
+        ), item];
+        return {...store, records} 
     }
-    ),on(ZipCodeActions.updateTimeOut,
+    ),on(ZipCodeActions.updateRecord,
+        (store, payload)=>{
+            console.log('updating record',payload);
+            const records = [...store.records.filter(
+                (r)=> r.conditionsAndZip.zip !== payload.conditionsAndZip.zip
+            ), payload];
+            return {...store, records} 
+                }
+        )
+    ,on(ZipCodeActions.updateTimeOut,
     (store, payload)=>{
         return {...store,timeOut:payload.timeOut}
     }

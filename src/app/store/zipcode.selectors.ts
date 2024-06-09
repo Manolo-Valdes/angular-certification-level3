@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { ZipCodeStoreData } from "./zipcode.reducer";
+import { ZipCodeStoreData } from "./zipcode.models";
 
 
 export const selectZipCodeState = createFeatureSelector<ZipCodeStoreData>('zipCode');
@@ -8,8 +8,8 @@ export const selectConditionsAndZips = createSelector(
     selectZipCodeState,
     (state) =>{
         console.log('selectConditionsAndZips state',state);
-        if (state !== undefined)
-            return state.conditionsAndZips;
+        if (state !== undefined && state.records.length > 0)
+            return state.records.map(r=> r.conditionsAndZip);
         return [];
     } 
 );
@@ -17,18 +17,32 @@ export const selectConditionsAndZips = createSelector(
 export const selectZipCodes = createSelector(selectZipCodeState, 
     state =>{
         console.log('selectZipCodes state',state);
-    if (state !== undefined &&
-        state.conditionsAndZips.length > 0)
-        return state.conditionsAndZips.map((x) => x.zip);
+    if (state !== undefined && state.records.length > 0)
+        return state.records.map((r) => r.conditionsAndZip.zip);
     return [];
 } );
 
+export const selectRecord= (zipcode: string) =>
+    createSelector(
+        selectZipCodeState,
+        state =>{
+            if (state !== undefined && state.records.length > 0)
+                {
+                    return state.records.find((x) => x.conditionsAndZip.zip === zipcode);
+                }
+            return undefined;
+        });
+    
 export const selectForeCastRecord = (zipcode: string) =>
     createSelector(
     selectZipCodeState,
     state =>{
-        if (state !== undefined && state.foreCastRecords.length > 0)
-            return state.foreCastRecords.find((x) => x.zip === zipcode);
+        if (state !== undefined && state.records.length > 0)
+            {
+                const item = state.records.find((x) => x.conditionsAndZip.zip === zipcode);
+                if (item)
+                    return item.foreCast;
+            }
         return undefined;
     });
 

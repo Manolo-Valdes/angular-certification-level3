@@ -1,7 +1,7 @@
 import { createActionGroup, emptyProps, props } from "@ngrx/store";
 import { ConditionsAndZip } from "app/conditions-and-zip.type";
-import { ForecastRecord } from "./zipcode.reducer";
-
+import { Forecast } from "app/forecasts-list/forecast.type";
+import { Record } from "./zipcode.models";
 
 export const ZipCodeActions = createActionGroup(
     {
@@ -9,13 +9,10 @@ export const ZipCodeActions = createActionGroup(
         events:{
             'AddConditionsAndZip':props<ConditionsAndZip>(),
             'RemoveLocationByIndex':props<{index:number}>(),
-            'RemoveConditionsAndZip':props<ConditionsAndZip>(),
             'Add':props<{code:string}>(),
-            'AddedSuccess':props<{code:string}>(),
-            'Remove':props<{code:string}>(),
-            'RemovedSuccess':props<{code:string}>(),
             'GetForeCast':props<{code:string}>(),
-            'AddForeCastRecord':props<ForecastRecord>(),
+            'AddForeCastRecord':props<{code:string,foreCast:Forecast}>(),
+            'UpdateRecord':props<Record>(),
             'UpdateTimeOut':props<{timeOut:number}>(),
         }
     });

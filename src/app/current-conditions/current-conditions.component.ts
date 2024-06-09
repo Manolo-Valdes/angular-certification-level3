@@ -1,6 +1,5 @@
 import {Component, inject, OnInit, Signal} from '@angular/core';
 import {WeatherService} from "../weather.service";
-import {LocationService} from "../location.service";
 import {Router} from "@angular/router";
 import {ConditionsAndZip} from '../conditions-and-zip.type';
 import { Store } from '@ngrx/store';
@@ -33,8 +32,4 @@ export class CurrentConditionsComponent implements OnInit {
     console.log('removing page', index);
    this.store.dispatch(ZipCodeActions.removeLocationByIndex({index})) ;
   }
-  removeConditionsAndZip(value:ConditionsAndZip)
-  {
-    this.store.dispatch(ZipCodeActions.removeConditionsAndZip(value));
-  }
-}
+ }

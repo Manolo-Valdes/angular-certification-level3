@@ -6,8 +6,6 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { ZipCodeActions } from 'app/store/zipcode.actions';
 import { selectForeCastRecord } from 'app/store/zipcode.selectors';
-import { ForecastRecord } from 'app/store/zipcode.reducer';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-forecasts-list',
@@ -26,7 +24,7 @@ export class ForecastsListComponent {
     
       this.zipcode = route.snapshot.params['zipcode'];
       console.log("zip code from route:", this.zipcode);
-      this.forecast$ =this.store.select(selectForeCastRecord(this.zipcode)).pipe(map((x) => x?.foreCast));
+      this.forecast$ =this.store.select(selectForeCastRecord(this.zipcode));
       this.store.dispatch(ZipCodeActions.getForeCast({code:this.zipcode}));
   }
 }

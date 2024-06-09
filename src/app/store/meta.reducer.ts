@@ -1,6 +1,6 @@
 import {ActionReducer, INIT, MetaReducer, UPDATE } from "@ngrx/store"
-import { ZipCodeStoreData } from "./zipcode.reducer";
 import { ZipCodeActions } from "./zipcode.actions";
+import { ZipCodeStoreData } from "./zipcode.models";
 
 export const STAGE_KEY = "ngrxState";
   export const PersistStateMetaReducer = (
@@ -8,7 +8,7 @@ export const STAGE_KEY = "ngrxState";
   ): ActionReducer<ZipCodeStoreData> => {
     return (state, action) => {
       console.log(action.type)
-      if (action.type === INIT || action.type === UPDATE) {
+      if (action.type === INIT) {
         const json = localStorage.getItem(STAGE_KEY);
         if (json) {
           try {
@@ -25,7 +25,6 @@ export const STAGE_KEY = "ngrxState";
       switch (action.type)
       {
             case ZipCodeActions.addConditionsAndZip.type:
-            case ZipCodeActions.removeConditionsAndZip.type:
             case ZipCodeActions.removeLocationByIndex.type:
             case ZipCodeActions.addForeCastRecord.type:
             case ZipCodeActions.updateTimeOut.type:
