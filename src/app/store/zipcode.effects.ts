@@ -48,7 +48,9 @@ getForecast$ = createEffect(
                 map(timeOut=> ({record , timeOut}))
             )),
             filter(({record , timeOut})=>{
-                if (record && record.foreCast)
+                if (!record)
+                    return false;
+                if (record.foreCast)
                     {
                         return (Date.now() - record.timeOut) > timeOut;
                     }
@@ -58,8 +60,15 @@ getForecast$ = createEffect(
         )
         ),
         tap(()=> console.log('retriving from backend server..')),
+        map(zip=> ZipCodeActions.refreshRecord({code:zip}))
 
+    )
+);
 
+refreshRecord$ = createEffect(
+    ()=>this.actions$.pipe(
+        ofType(ZipCodeActions.refreshRecord),
+        map(item => item.code),
         mergeMap(zip=> 
             this.weatherService.currentConditions$(zip).pipe(
                 tap(data => console.log('got responce from backend', data)),
@@ -76,9 +85,5 @@ getForecast$ = createEffect(
                       }))
                   ),
                   map((recor) => ZipCodeActions.updateRecord(recor))))
-
-
-
-    )
-);
+));
 }
