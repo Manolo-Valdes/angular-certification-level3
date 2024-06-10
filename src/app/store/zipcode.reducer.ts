@@ -12,7 +12,7 @@ export const zipCodeReducer = createReducer(
         const item:Record = {
             conditionsAndZip:payload,
             foreCast:null,
-            timeOut: Date.now(),
+            timeOut: Date.now()
         }
         const records = [...store.records.filter(
             (r)=> r.conditionsAndZip.zip !== payload.zip

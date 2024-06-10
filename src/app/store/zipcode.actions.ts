@@ -15,5 +15,9 @@ export const ZipCodeActions = createActionGroup(
             'RefreshRecord':props<{code:string}>(),
             'UpdateRecord':props<Record>(),
             'UpdateTimeOut':props<{timeOut:number}>(),
+            'StartPoolling':props<{code:string}>(),
+            'StartPoolingByIndex':props<{index:number}>(),
+            'StopPooling':props<{code:string}>(),
+            'StopPoolingByIndex':props<{index:number}>(),
         }
     });

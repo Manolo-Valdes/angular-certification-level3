@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 import { ZipCodeActions } from 'app/store/zipcode.actions';
 import { selectConditionsAndZips } from 'app/store/zipcode.selectors';
 import { Observable } from 'rxjs/internal/Observable';
+import { pageChangeData } from 'app/tab-view/tab-view.component';
 
 @Component({
   selector: 'app-current-conditions',
@@ -23,13 +24,19 @@ export class CurrentConditionsComponent implements OnInit {
   protected currentConditionsByZip$: Observable<ConditionsAndZip[]>;
 
 
-  showForecast(zipcode : string){
+  showForecast(zipcode : string):void{
     this.router.navigate(['/forecast', zipcode])
   }
 
-  removeLocation(index:number)
+  removeLocation(index:number):void
   {
     console.log('removing page', index);
    this.store.dispatch(ZipCodeActions.removeLocationByIndex({index})) ;
   }
- }
+
+  locationChanged(value:pageChangeData):void
+  {
+    this.store.dispatch(ZipCodeActions.stopPoolingByIndex({index:value.previus}));
+    this.store.dispatch(ZipCodeActions.startPoolingByIndex({index:value.current}));
+  }
+}

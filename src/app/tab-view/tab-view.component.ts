@@ -1,6 +1,13 @@
-import { AfterContentChecked, AfterContentInit, ChangeDetectorRef, Component, ContentChildren, EventEmitter, OnChanges, OnDestroy, Output, QueryList, SimpleChanges } from '@angular/core';
+import { AfterContentInit, Component, ContentChildren, EventEmitter, OnDestroy, Output, QueryList, SimpleChanges } from '@angular/core';
 import { TabPageComponent } from 'app/tab-page/tab-page.component';
 import { Subscription } from 'rxjs';
+
+
+export interface pageChangeData 
+{
+  previus:number,
+  current:number
+}
 
 @Component({
   selector: 'app-tab-view',
@@ -9,6 +16,7 @@ import { Subscription } from 'rxjs';
 })
 export class TabViewComponent implements AfterContentInit, OnDestroy  {
   @Output() pageRemoved: EventEmitter<number> = new EventEmitter();
+  @Output() activePageChanged: EventEmitter<pageChangeData> = new EventEmitter();
   @ContentChildren(TabPageComponent) pages: QueryList<TabPageComponent>;
 
 
@@ -22,7 +30,9 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
   protected selectPage(index:number): void {
     const snapshoot:TabPageComponent[] = this.pages.toArray();
     console.log('selecting page:', index);
+    const lastIndex = snapshoot.findIndex(p=> p.active === true);
     snapshoot.forEach((t,i) => (t.active = i===index));
+    this.activePageChanged.emit({previus:lastIndex,current:index})    
   }
 
   ngAfterContentInit(): void {
@@ -51,7 +61,8 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
           let last = pages.length -1;
           setTimeout(() => {
             this.selectPage(last);
-          },100);       
+          });
+          this.activePageChanged.emit({previus:-1,current:last})    
         }
     }
 }

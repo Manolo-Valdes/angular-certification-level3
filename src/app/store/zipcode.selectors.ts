@@ -33,7 +33,18 @@ export const selectRecord= (zipcode: string) =>
             return undefined;
         });
     
-export const selectForeCastRecord = (zipcode: string) =>
+        export const selectRecordByIndex= (index: number) =>
+            createSelector(
+                selectZipCodeState,
+                state =>{
+                    if (state !== undefined && index < state.records.length)
+                        {
+                            return state.records.find((x,i) => i === index);
+                        }
+                    return undefined;
+                });
+        
+                export const selectForeCastRecord = (zipcode: string) =>
     createSelector(
     selectZipCodeState,
     state =>{

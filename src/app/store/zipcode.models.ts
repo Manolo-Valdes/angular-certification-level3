@@ -4,7 +4,7 @@ import { Forecast } from "app/forecasts-list/forecast.type";
 export interface Record {
     conditionsAndZip:ConditionsAndZip,
     foreCast: Forecast,
-    timeOut: number,
+    timeOut: number
 }
 export interface ZipCodeStoreData{
     records: Record[],

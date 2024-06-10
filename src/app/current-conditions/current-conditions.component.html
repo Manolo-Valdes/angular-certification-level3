@@ -1,4 +1,7 @@
-<app-tab-view (pageRemoved)="removeLocation($event)">
+<app-tab-view 
+(pageRemoved)="removeLocation($event)"
+(activePageChanged)="locationChanged($event)"
+>
   <app-tab-page *ngFor="let location of currentConditionsByZip$ | async" 
   [title]="location.data.name +'('+ location.zip +')'"
   >

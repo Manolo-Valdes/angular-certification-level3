@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, filter, mergeMap, tap,withLatestFrom} from 'rxjs/operators';
+import { map, filter, mergeMap, tap,withLatestFrom, takeUntil, flatMap} from 'rxjs/operators';
 
 import { WeatherService } from "app/weather.service";
 import { ZipCodeActions } from "./zipcode.actions";
 import { Record } from "./zipcode.models";
-import {selectRecord, selectTimeOut, selectZipCodes} from "./zipcode.selectors"
+import {selectRecord, selectRecordByIndex, selectTimeOut, selectZipCodes} from "./zipcode.selectors"
 import { Store } from "@ngrx/store";
 import { ConditionsAndZip } from "app/conditions-and-zip.type";
-import { iif, of } from "rxjs";
+import {interval} from "rxjs";
 
 @Injectable()
 export class ZipCodeEffects{
@@ -36,6 +36,27 @@ addzipCodeLocation$ = createEffect(
     )
 );
 
+/*triggerPooling$ = createEffect(
+    ()=> this.actions$.pipe(
+        ofType(ZipCodeActions.addConditionsAndZip, ZipCodeActions.removeLocationByIndex),
+            mergeMap(() => this.store.select(selectTimeOut)
+            .pipe(
+                tap((time)=> console.log('start pooling every',time)),
+                map(time=> ZipCodeActions.startPoolling({time}))
+            )),
+    )
+);
+
+triggerPoolingByTimeChanged$ = createEffect(
+    ()=> this.actions$.pipe(
+        ofType(ZipCodeActions.updateTimeOut),
+        map(payload=> payload.timeOut),
+        tap(time=> {
+            console.log('Reset pooling interval to:',time)
+        }),
+        map(time=> ZipCodeActions.startPoolling({time}))
+    )
+);*/
 
 getForecast$ = createEffect(
     ()=> this.actions$.pipe(
@@ -79,11 +100,64 @@ refreshRecord$ = createEffect(
                         const r: Record ={
                             conditionsAndZip:{data, zip},
                             foreCast,
-                            timeOut: Date.now(),                                    
+                            timeOut: Date.now()                                 
                         }
                         return r;
                       }))
                   ),
                   map((recor) => ZipCodeActions.updateRecord(recor))))
 ));
+
+pooling$=createEffect(
+    ()=>this.actions$.pipe(
+        ofType(ZipCodeActions.startPoolling),
+        map(payload=> payload.code),
+        mergeMap((code)=> this.store.select(selectTimeOut).pipe(
+            tap((time)=>console.log(`performing pool on:${code} every ${time}`)),
+            mergeMap((time)=>
+            interval(time).pipe(
+                    takeUntil(this.actions$.pipe(
+                        ofType(ZipCodeActions.stopPooling),
+                        filter(payload => code === payload.code),
+                        tap(payload => console.log(`Stop polling ${payload.code} `))
+                    )),
+                    tap(()=> this.store.dispatch(ZipCodeActions.refreshRecord({code})) )
+                )
+                )
+        ))
+    ),
+    { dispatch: false }
+);
+
+startPoolByIndex$=createEffect(
+    ()=>this.actions$.pipe(
+        ofType(ZipCodeActions.startPoolingByIndex),
+        map(payload=> payload.index),
+        mergeMap((index)=> this.store.select(selectRecordByIndex(index)).pipe(
+            filter(record=> {
+               if(record && record.conditionsAndZip)
+                return true;
+               return false;
+            }),
+            tap(record=>console.log('start pooling of record with code:',record.conditionsAndZip.zip)),
+            map (record=> ZipCodeActions.startPoolling({code: record.conditionsAndZip.zip}))
+        ))
+    )
+);
+
+stopPoolByIndex$=createEffect(
+    ()=>this.actions$.pipe(
+        ofType(ZipCodeActions.stopPoolingByIndex),
+        map(payload=> payload.index),
+        mergeMap((index)=> this.store.select(selectRecordByIndex(index)).pipe(
+            filter(record=> {
+                if(record && record.conditionsAndZip)
+                 return true;
+                return false;
+             }),
+             tap(record=>console.log('stoping pooling of record with code:',record.conditionsAndZip.zip)),
+             map (record=> ZipCodeActions.stopPooling({code: record.conditionsAndZip.zip}))
+        ))
+    )
+);
 }
