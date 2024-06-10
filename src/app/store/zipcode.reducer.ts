@@ -22,11 +22,18 @@ export const zipCodeReducer = createReducer(
     ),on(ZipCodeActions.removeLocationByIndex,
     (store, payload)=>{
         console.log('removing location',payload);
-        const records = [...store.records.filter(
-            (r,i)=> i !== payload.index
-        )];
-        return {...store, records} 
-     }
+        if (payload.index>=0 && payload.index < store.records.length)
+            {
+                const record = store.records.find((x,i) => i === payload.index);
+                const pool = [...store.pool.filter(code=> code !== record.conditionsAndZip.zip
+                )];
+                const records = [...store.records.filter(
+                    (r,i)=> i !== payload.index
+                )];
+                        return {...store, records,pool}
+                    }
+            return {...store}
+                }
     ),on(ZipCodeActions.addForeCastRecord,
     (store, payload)=>{
         console.log('adding ForeCast',payload);
@@ -56,4 +63,28 @@ export const zipCodeReducer = createReducer(
         return {...store,timeOut:payload.timeOut}
     }
     )
-);
+    ,on(ZipCodeActions.stopPoolingByIndex,
+        (store, payload)=>{
+            console.log('stopPoolingByIndex',payload.index);
+            if (payload.index>=0 && payload.index < store.records.length)
+                {
+                    const record = store.records.find((x,i) => i === payload.index);
+                    console.log(payload.index,store.records.length, record)
+                    const pool = [...store.pool.filter(code=> code !== record.conditionsAndZip.zip
+                    )];
+                    console.log('stopPoolingByIndex',pool);
+                    return {...store,pool}
+                        }
+                return {...store}
+            }
+        )
+        ,on(ZipCodeActions.startPoolling,
+            (store, payload)=>{
+                console.log(`Adding ${payload.code} to pool`);
+                const pool = [...store.pool.filter(code=> code !== payload.code
+                ), payload.code];
+                return {...store,pool}
+            }
+            )
+    
+    );

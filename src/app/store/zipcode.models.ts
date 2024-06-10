@@ -9,10 +9,12 @@ export interface Record {
 export interface ZipCodeStoreData{
     records: Record[],
     timeOut:number
+    pool:string[]
 }
 export const initialData:ZipCodeStoreData=
  {
     records:[],
-    timeOut:(2*3600*1000) //default value 2 hours  
+    timeOut:(2*3600*1000), //default value 2 hours 
+    pool:[] 
  };
 

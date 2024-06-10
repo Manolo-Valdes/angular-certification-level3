@@ -62,7 +62,6 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
           setTimeout(() => {
             this.selectPage(last);
           });
-          this.activePageChanged.emit({previus:-1,current:last})    
         }
     }
 }
