@@ -18,6 +18,7 @@ export const ZipCodeActions = createActionGroup(
             'StartPoolling':props<{code:string}>(),
             'StartPoolingByIndex':props<{index:number}>(),
             'StopPooling':props<{code:string}>(),
+            'StopAllPooling':emptyProps(),
             'StopPoolingByIndex':props<{index:number}>(),
         }
     });

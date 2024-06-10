@@ -36,6 +36,7 @@ export class CurrentConditionsComponent implements OnInit {
 
   locationChanged(value:pageChangeData):void
   {
+    console.log(`pooling stop ${value.previus} and start ${value.current}`),
     this.store.dispatch(ZipCodeActions.stopPoolingByIndex({index:value.previus}));
     this.store.dispatch(ZipCodeActions.startPoolingByIndex({index:value.current}));
   }

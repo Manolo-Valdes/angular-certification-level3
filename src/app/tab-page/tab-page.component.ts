@@ -1,9 +1,11 @@
+import { ChangeDetectionStrategy } from '@angular/compiler';
 import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-tab-page',
   templateUrl: './tab-page.component.html',
-  styleUrls: ['./tab-page.component.css']
+  styleUrls: ['./tab-page.component.css'],
+ // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TabPageComponent {
   @Input()
@@ -17,4 +19,8 @@ export class TabPageComponent {
     if (this._active!==value)
       this._active = value;
   }
+
+constructor(){
+  console.log('tabPage Contructed');
+}
 }

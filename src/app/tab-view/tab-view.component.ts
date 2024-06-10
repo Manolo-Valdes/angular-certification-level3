@@ -31,8 +31,11 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
     const snapshoot:TabPageComponent[] = this.pages.toArray();
     console.log('selecting page:', index);
     const lastIndex = snapshoot.findIndex(p=> p.active === true);
-    snapshoot.forEach((t,i) => (t.active = i===index));
-    this.activePageChanged.emit({previus:lastIndex,current:index})    
+    if (lastIndex!==index)
+    {
+      snapshoot.forEach((t,i) => (t.active = i===index));
+      this.activePageChanged.emit({previus:lastIndex,current:index})    
+    }  
   }
 
   ngAfterContentInit(): void {
@@ -58,9 +61,8 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
       const hasActivePage = pages.find((t) => t.active);
       if (!hasActivePage)
         {
-          let last = pages.length -1;
           setTimeout(() => {
-            this.selectPage(last);
+            this.selectPage(0);
           });
         }
     }

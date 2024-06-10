@@ -33,15 +33,15 @@ export const selectRecord= (zipcode: string) =>
             return undefined;
         });
     
-        export const selectRecordByIndex= (index: number) =>
+        export const selectCodeByIndex= (index: number) =>
             createSelector(
                 selectZipCodeState,
                 state =>{
-                    if (state !== undefined && index < state.records.length)
+                    if (state !== undefined && index >= 0 && index < state.records.length)
                         {
-                            return state.records.find((x,i) => i === index);
+                            return state.records.find((x,i) => i === index).conditionsAndZip.zip;
                         }
-                    return undefined;
+                    return null;
                 });
         
                 export const selectForeCastRecord = (zipcode: string) =>
@@ -65,6 +65,17 @@ export const selectTimeOut = createSelector(
             return state.timeOut;
         return 0;
 });
+
+export const selectPool =
+    createSelector(
+    selectZipCodeState,
+    state =>{
+        if (state !== undefined)
+            {
+                return state.pool;
+            }
+        return [];
+    });
 
 export const selectIsOnPool = (zipcode: string) =>
     createSelector(

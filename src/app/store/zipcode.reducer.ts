@@ -69,7 +69,6 @@ export const zipCodeReducer = createReducer(
             if (payload.index>=0 && payload.index < store.records.length)
                 {
                     const record = store.records.find((x,i) => i === payload.index);
-                    console.log(payload.index,store.records.length, record)
                     const pool = [...store.pool.filter(code=> code !== record.conditionsAndZip.zip
                     )];
                     console.log('stopPoolingByIndex',pool);

@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, filter, mergeMap, tap,withLatestFrom, takeUntil, flatMap, delay} from 'rxjs/operators';
+import { map, filter, mergeMap, tap,withLatestFrom, takeWhile, delay, delayWhen, takeUntil} from 'rxjs/operators';
 
 import { WeatherService } from "app/weather.service";
 import { ZipCodeActions } from "./zipcode.actions";
 import { Record } from "./zipcode.models";
-import {selectIsOnPool, selectRecord, selectRecordByIndex, selectTimeOut, selectZipCodes} from "./zipcode.selectors"
+import {selectIsOnPool, selectPool, selectRecord, selectCodeByIndex, selectTimeOut, selectZipCodes} from "./zipcode.selectors"
 import { Store } from "@ngrx/store";
 import { ConditionsAndZip } from "app/conditions-and-zip.type";
 import {interval} from "rxjs";
@@ -91,39 +91,61 @@ pooling$=createEffect(
     ()=>this.actions$.pipe(
         ofType(ZipCodeActions.startPoolling),
         map(payload=> payload.code),
-        delay(1000),
-        mergeMap(code => this.store.select(selectIsOnPool(code)).pipe(
-            filter(isOnpool => isOnpool === false),
-            mergeMap(()=> this.store.select(selectTimeOut).pipe(
+     //   mergeMap(code => this.store.select(selectIsOnPool(code)).pipe(
+     //       filter(isOnpool => isOnpool === false),
+            mergeMap((code)=> this.store.select(selectTimeOut).pipe(
                 tap((time)=>console.log(`performing pool on:${code} every ${time}`)),
                 mergeMap((time)=>
                 interval(time).pipe(
-                        takeUntil(this.store.select(selectIsOnPool(code)).pipe(
-                            filter(payload => payload === false),
-                            tap(payload => console.log(`Stop polling ${payload.code} `))
-                        )),
-                        map(()=> ZipCodeActions.refreshRecord({code}) )
-                    )
-                    )
-            ))    
-        ))
-    )
+                    tap((t)=>console.log(`pool ${t} on:${code}`)),
+                    takeUntil(
+                        this.actions$.pipe(
+                          ofType(ZipCodeActions.stopPooling),
+                          tap((payload)=> console.log(`takeUntil ${payload.code} `)),
+                          filter((payload) => code === payload.code),
+                          tap((payload) => console.log(`Stop polling ${payload.code} `))
+                        )
+                    ),
+                    map(()=> ZipCodeActions.refreshRecord({code}) )  
+                ))    
+     //   ))
+    ))
+)
 );
+
 
 startPoolByIndex$=createEffect(
     ()=>this.actions$.pipe(
         ofType(ZipCodeActions.startPoolingByIndex),
         map(payload=> payload.index),
-        mergeMap((index)=> this.store.select(selectRecordByIndex(index)).pipe(
-            filter(record=> {
-               if(record && record.conditionsAndZip)
-                return true;
-               return false;
-            }),
-            tap(record=>console.log('start pooling of record with code:',record.conditionsAndZip.zip)),
-            map (record=> ZipCodeActions.startPoolling({code: record.conditionsAndZip.zip}))
+        mergeMap((index)=> this.store.select(selectCodeByIndex(index)).pipe(
+            filter(code=> code!=null),
+            tap(code=>console.log('start pooling of record with code:',code)),
+            map (code=> ZipCodeActions.startPoolling({code}))
         ))
     )
 );
 
+stopPoolByIndex$=createEffect(
+    ()=>this.actions$.pipe(
+        ofType(ZipCodeActions.stopPoolingByIndex),
+        map(payload=> payload.index),
+        tap(index=>console.log('stop pooling of record with index:',index)),
+        mergeMap((index)=> this.store.select(selectCodeByIndex(index)).pipe(
+            filter(code=> code!=null),
+            tap(code=>console.log('stop pooling of record with code:',code)),
+            map (code=> ZipCodeActions.stopPooling({code}))
+        ))
+    )
+);
+
+stopAllPoolByIndex$=createEffect(
+    ()=>this.actions$.pipe(
+        ofType(ZipCodeActions.stopAllPooling),
+        tap(()=>console.log('stop All pooling..')),
+        mergeMap(()=> this.store.select(selectZipCodes).pipe(
+            tap(codes=> codes.forEach(code=> this.store.dispatch(ZipCodeActions.stopPooling({code})))),
+        ))
+    ), {dispatch:false}
+);
 }
