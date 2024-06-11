@@ -22,37 +22,47 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
 
   protected visible:boolean=true
   private sub:Subscription;
+  private _selectedPageIndex:number=-1;
+  private INDEX_KEY:string='TabViewSelectedPageIndex';
   removePage(index:number):void
   {
     console.log('emiting remove page even', index);
     this.pageRemoved.emit(index);
   }
-  protected selectPage(index:number): void {
+  protected selectPage(index:number,notify:boolean): void {
     const snapshoot:TabPageComponent[] = this.pages.toArray();
     console.log('selecting page:', index);
+    this._selectedPageIndex=index;
+    localStorage.setItem(this.INDEX_KEY,this._selectedPageIndex.toString());
     const lastIndex = snapshoot.findIndex(p=> p.active === true);
     if (lastIndex!==index)
     {
       snapshoot.forEach((t,i) => (t.active = i===index));
-      this.activePageChanged.emit({previus:lastIndex,current:index})    
+      if (notify)
+        this.activePageChanged.emit({previus:lastIndex,current:index})    
     }  
   }
 
   ngAfterContentInit(): void {
-    if (this.pages)
+    const index:string = localStorage.getItem(this.INDEX_KEY);
+    if (index)
       {
-        this.setUp(this.pages);
+        this._selectedPageIndex = Number(index);
+      }
+        if (this.pages)
+      {
+        this.setUp(this.pages,true);
         this.sub = this.pages.changes.subscribe((pages)=>{
-          this.setUp(pages)
+          this.setUp(pages,false)
           });
-          }
+  }
   }
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
 
-  private setUp(pages:QueryList<TabPageComponent>):void
+  private setUp(pages:QueryList<TabPageComponent>,notify:boolean):void
 {
   this.visible = pages.length > 0;
   console.log('pages visible', this.visible);
@@ -61,9 +71,7 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
       const hasActivePage = pages.find((t) => t.active);
       if (!hasActivePage)
         {
-          setTimeout(() => {
-            this.selectPage(0);
-          });
+          setTimeout(() => this.selectPage(this._selectedPageIndex,notify));
         }
     }
 }
