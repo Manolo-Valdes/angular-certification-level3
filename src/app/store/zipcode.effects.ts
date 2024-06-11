@@ -93,21 +93,23 @@ pooling$=createEffect(
     ()=>this.actions$.pipe(
         ofType(ZipCodeActions.startPoolling),
         map(payload=> payload.code),
-                switchMap((code)=> this.store.select(selectTimeOut).pipe(
-                tap((time)=>console.log(`performing pool on:${code} every ${time}`)),
-                switchMap((time)=>
-                interval(time).pipe(
-                    tap((t)=>console.log(`pool ${t} on:${code}`)),
-                    takeUntil(
-                        this.actions$.pipe(
-                          ofType(ZipCodeActions.stopPooling),
-                          tap((payload)=> console.log(`takeUntil ${payload.code} `)),
-                          filter((payload) => code === payload.code),
-                          tap((payload) => console.log(`Stop polling ${payload.code} `))
-                        )
-                    ),
-                    map(()=> ZipCodeActions.refreshRecord({code}) )  
-                ))    
+        switchMap((code)=> this.store.select(selectTimeOut).pipe(
+            tap((time)=>console.log(`performing pool on:${code} every ${time}`)),
+            switchMap((time)=>
+            interval(time).pipe(
+                tap((t)=>console.log(`pool ${t} on:${code}`)),
+                takeUntil(
+                    this.actions$.pipe(
+                    ofType(ZipCodeActions.stopPooling),
+                    tap((payload)=> console.log(`takeUntil ${payload.code} `)),
+                    filter((payload) => code === payload.code),
+                    tap((()=> localStorage.setItem(this.ON_POOL_KEY,''))),
+                    tap((payload) => console.log(`Stop polling ${payload.code} `))
+                    )
+                ),
+                map(()=> ZipCodeActions.refreshRecord({code}) )  
+                )
+            )    
     ))
 )
 );
@@ -146,12 +148,11 @@ stopAllPoolByIndex$=createEffect(
         tap(()=>console.log('stop All pooling..')),
         tap(()=>{
             const code = localStorage.getItem(this.ON_POOL_KEY);
-            this.store.dispatch( ZipCodeActions.stopPooling({code}));
+            if (code!=="")
+                {
+                    this.store.dispatch( ZipCodeActions.stopPooling({code}));
+                }
         }),
-
-//        switchMap(()=> this.store.select(selectZipCodes).pipe(
-  //          tap(codes=> codes.forEach(code=> this.store.dispatch(ZipCodeActions.stopPooling({code})))),
-    //    )),
         map(()=>{
             const code = localStorage.getItem(this.ON_POOL_KEY);
             return ZipCodeActions.startPoolling({code});
