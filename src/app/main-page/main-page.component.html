@@ -2,11 +2,13 @@
 
   <app-zipcode-entry> </app-zipcode-entry>
   <app-current-conditions></app-current-conditions>
-  <div class="p-1">
-    <label for="refreshTime">Cache Refresh time (in ms)</label>
-    <input type="number" name="timeout" [(ngModel)]="timeOut" placeholder="time out (ms)">
-    <button class="btn btn-primary" (click)="updateTimeOut()" >
-      Update
-    </button>
+  <div class="container-flex">
+    <label class="mx-1 p-1" for="refreshTime">Cache Refresh time (in ms)</label>
+    <input class="mx-1" type="number" name="timeout" [(ngModel)]="timeOut" placeholder="time out (ms)" />
+    <div class="flex mx-1">
+      <button class=" btn btn-primary" (click)="updateTimeOut()" >
+        Update
+      </button>
+      </div>
   </div>
 </div>
