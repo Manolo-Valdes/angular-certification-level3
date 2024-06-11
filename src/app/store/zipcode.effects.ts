@@ -98,7 +98,6 @@ pooling$=createEffect(
                 takeUntil(
                     this.actions$.pipe(
                     ofType(ZipCodeActions.stopPooling),
-                    tap((payload)=> console.log(`takeUntil ${payload.code} `)),
                     filter((payload) => code === payload.code),
                     tap((()=> localStorage.setItem(this.ON_POOL_KEY,''))),
                     tap((payload) => console.log(`Stop polling ${payload.code} `))
@@ -130,7 +129,6 @@ stopPoolByIndex$=createEffect(
     ()=>this.actions$.pipe(
         ofType(ZipCodeActions.stopPoolingByIndex),
         map(payload=> payload.index),
-        tap(index=>console.log('stop pooling of record with index:',index)),
         switchMap((index)=> this.store.select(selectCodeByIndex(index)).pipe(
             filter(code=> code!=null),
             tap(code=>console.log('stop pooling of record with code:',code)),

@@ -66,28 +66,3 @@ export const selectTimeOut = createSelector(
         return 0;
 });
 
-/*
-export const selectPool =
-    createSelector(
-    selectZipCodeState,
-    state =>{
-        if (state !== undefined)
-            {
-                return state.pool;
-            }
-        return [];
-    });
-
-export const selectIsOnPool = (zipcode: string) =>
-    createSelector(
-    selectZipCodeState,
-    state =>{
-        if (state !== undefined && state.pool.length > 0)
-            {
-                const item = state.pool.find((x) => x === zipcode);
-                if (item)
-                    return true;
-            }
-        return false;
-    });
-*/

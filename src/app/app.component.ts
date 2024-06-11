@@ -1,10 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import {SwPush, SwUpdate} from '@angular/service-worker';
-import {interval} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
-import { Store } from '@ngrx/store';
-import { ZipCodeActions } from './store/zipcode.actions';
-import { LocationService } from './location.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',

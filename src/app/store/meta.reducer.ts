@@ -12,7 +12,6 @@ export const STAGE_KEY = "ngrxState";
         const json = localStorage.getItem(STAGE_KEY);
         if (json) {
           try {
-            console.log(state);
             const value:ZipCodeStoreData =JSON.parse(json);
             console.log(value);
             return value;
