@@ -15,19 +15,12 @@ export const zipCodeReducer = createReducer(
             timeOut: Date.now()
         }
         const record = store.records.find(r=> r.conditionsAndZip.zip ===payload.zip);
-        if (record)
+        if (!record)
             {
-                console.log('record found', payload.zip);
-                const index = store.records.indexOf(record);
-
-                const records = [...store.records]
-                records[index]=item;
-                return {...store, records}
+                const records = [...store.records, item];
+                return {...store, records} 
             }
-        const records = [...store.records.filter(
-            (r)=> r.conditionsAndZip.zip !== payload.zip
-        ), item];
-        return {...store, records} 
+            return store;
     }
     ),on(ZipCodeActions.removeLocationByIndex,
     (store, payload)=>{
