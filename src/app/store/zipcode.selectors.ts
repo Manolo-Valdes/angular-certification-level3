@@ -66,6 +66,7 @@ export const selectTimeOut = createSelector(
         return 0;
 });
 
+/*
 export const selectPool =
     createSelector(
     selectZipCodeState,
@@ -89,3 +90,4 @@ export const selectIsOnPool = (zipcode: string) =>
             }
         return false;
     });
+*/

@@ -30,5 +30,7 @@ export class MainPageComponent implements OnDestroy {
   {
     this._timeOut=value;
     this.store.dispatch(ZipCodeActions.updateTimeOut({timeOut:value}));
+    // reset pooling, to use the new time Out value
+    this.store.dispatch(ZipCodeActions.stopAllPooling());
   }
 }

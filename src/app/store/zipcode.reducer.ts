@@ -24,16 +24,17 @@ export const zipCodeReducer = createReducer(
         console.log('removing location',payload);
         if (payload.index>=0 && payload.index < store.records.length)
             {
-                const record = store.records.find((x,i) => i === payload.index);
-                const pool = [...store.pool.filter(code=> code !== record.conditionsAndZip.zip
-                )];
+          //      const record = store.records.find((x,i) => i === payload.index);
+            //    const pool = [...store.pool.filter(code=> code !== record.conditionsAndZip.zip
+              //  )];
                 const records = [...store.records.filter(
                     (r,i)=> i !== payload.index
                 )];
-                        return {...store, records,pool}
-                    }
-            return {...store}
-                }
+                     //   return {...store, records,pool}
+                        return {...store, records}
+            }
+        return store
+    }
     ),on(ZipCodeActions.addForeCastRecord,
     (store, payload)=>{
         console.log('adding ForeCast',payload);
@@ -63,7 +64,7 @@ export const zipCodeReducer = createReducer(
         return {...store,timeOut:payload.timeOut}
     }
     )
-    ,on(ZipCodeActions.stopPoolingByIndex,
+/*    ,on(ZipCodeActions.stopPoolingByIndex,
         (store, payload)=>{
             console.log('stopPoolingByIndex',payload.index);
             if (payload.index>=0 && payload.index < store.records.length)
@@ -73,9 +74,9 @@ export const zipCodeReducer = createReducer(
                     )];
                     console.log('stopPoolingByIndex',pool);
                     return {...store,pool}
-                        }
-                return {...store}
-            }
+                }
+            return store
+        }
         )
         ,on(ZipCodeActions.startPoolling,
             (store, payload)=>{
@@ -85,5 +86,5 @@ export const zipCodeReducer = createReducer(
                 return {...store,pool}
             }
             )
-    
+   */ 
     );
