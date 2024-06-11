@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, Signal} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {WeatherService} from "../weather.service";
 import {Router} from "@angular/router";
 import {ConditionsAndZip} from '../conditions-and-zip.type';
@@ -7,6 +7,7 @@ import { ZipCodeActions } from 'app/store/zipcode.actions';
 import { selectConditionsAndZips } from 'app/store/zipcode.selectors';
 import { Observable } from 'rxjs/internal/Observable';
 import { pageChangeData } from 'app/tab-view/tab-view.component';
+import { LocationService } from 'app/location.service';
 
 @Component({
   selector: 'app-current-conditions',
@@ -14,7 +15,7 @@ import { pageChangeData } from 'app/tab-view/tab-view.component';
   styleUrls: ['./current-conditions.component.css']
 })
 export class CurrentConditionsComponent implements OnInit {
-  constructor(private store:Store){}
+  constructor(private store:Store , private locationService:LocationService){}
   ngOnInit(): void {
     this.currentConditionsByZip$ = this.store.select(selectConditionsAndZips);
 }
@@ -31,7 +32,7 @@ export class CurrentConditionsComponent implements OnInit {
   removeLocation(index:number):void
   {
     console.log('removing page', index);
-   this.store.dispatch(ZipCodeActions.removeLocationByIndex({index})) ;
+    this.locationService.removeLocation(index);
   }
 
   locationChanged(value:pageChangeData):void
