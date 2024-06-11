@@ -17,6 +17,7 @@ export class LocationService {
   }
 
   removeLocation(index : number) {
+    this.store.dispatch(ZipCodeActions.stopPoolingByIndex({index}));
     this.store.dispatch(ZipCodeActions.removeLocationByIndex({index}))
   }
 }
