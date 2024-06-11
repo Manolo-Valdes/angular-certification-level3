@@ -23,7 +23,6 @@ export class ForecastsListComponent {
      route : ActivatedRoute) {
     
       this.zipcode = route.snapshot.params['zipcode'];
-      console.log("zip code from route:", this.zipcode);
       this.forecast$ =this.store.select(selectForeCastRecord(this.zipcode));
       this.store.dispatch(ZipCodeActions.stopPooling({code:this.zipcode}));
       this.store.dispatch(ZipCodeActions.getForeCast({code:this.zipcode}));

@@ -27,7 +27,6 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
   private INDEX_KEY:string='TabViewSelectedPageIndex';
   removePage(index:number):void
   {
-    console.log('emiting remove page even', index);
     this.pageRemoved.emit(index);
   }
   protected selectPage(index:number,notify:boolean): void {
@@ -37,7 +36,6 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
     const lastIndex = snapshoot.findIndex(p=> p.active === true);
     if (lastIndex!==index)
     {
-      console.log('selecting page:', index);
       snapshoot.forEach((t,i) => (t.active = i===index));
       if (notify)
         this.activePageChanged.emit({previus:lastIndex,current:index})    
@@ -54,7 +52,6 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
       {
         this.setUp(this.pages,true);
         this.sub = this.pages.changes.subscribe((pages)=>{
-          console.log('pages added or removed'),
           this.setUp(pages,false)
           });
   }
@@ -68,10 +65,8 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
 {
   const lastPageCount:number = this.pageCount;
   const wasVisible:boolean= this.visible;
-  console.log('pages was:', wasVisible,lastPageCount);
   this.pageCount = pages.length;
   this.visible = pages.length > 0;
-  console.log('pages visible', this.visible, this.pageCount);
   if (this.visible)
     {
       const hasActivePage = pages.find((t) => t.active);
