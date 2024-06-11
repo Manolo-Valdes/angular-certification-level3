@@ -19,14 +19,11 @@ private ON_POOL_KEY:string='OnPoolingCode';
 addzipCodeLocation$ = createEffect(
     ()=>this.actions$.pipe(
         ofType(ZipCodeActions.add),
-        tap((value)=> console.log('Adding', value.code)),
         withLatestFrom(this.store.select(selectZipCodes)),        
-        tap(([value, codes]) => console.log('Adding', value.code , codes)),
         filter(([value, codes]) => codes.indexOf(value.code)===-1),
-        tap(([value, codes]) => console.log('Adding', value.code , codes)),
         mergeMap(([value, codes]) =>
             this.weatherService.currentConditions$(value.code).pipe(
-                tap(data => console.log('Adding', data)),
+                tap(data => console.log('Adding from server responce', data)),
                 map(data =>{
                     const conditionsAndZip:ConditionsAndZip = { zip: value.code, data:data };
                     console.log(conditionsAndZip);

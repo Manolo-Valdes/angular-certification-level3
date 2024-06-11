@@ -20,7 +20,7 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
   @ContentChildren(TabPageComponent) pages: QueryList<TabPageComponent>;
 
 
-  protected visible:boolean=true
+  protected visible:boolean=false
   private sub:Subscription;
   private _selectedPageIndex:number=-1;
   private INDEX_KEY:string='TabViewSelectedPageIndex';
@@ -53,6 +53,7 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
       {
         this.setUp(this.pages,true);
         this.sub = this.pages.changes.subscribe((pages)=>{
+          console.log('pages added or removed'),
           this.setUp(pages,false)
           });
   }
@@ -64,6 +65,8 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
 
   private setUp(pages:QueryList<TabPageComponent>,notify:boolean):void
 {
+  const wasVisible:boolean= this.visible;
+  console.log('pages was visible', wasVisible);
   this.visible = pages.length > 0;
   console.log('pages visible', this.visible);
   if (this.visible)
@@ -71,11 +74,13 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
       const hasActivePage = pages.find((t) => t.active);
       if (!hasActivePage)
         {
+          let doNotify:boolean=notify;
           if (this._selectedPageIndex ===-1 || pages.length === 1)
             {
               this._selectedPageIndex=0;
+              doNotify=!wasVisible;
             }
-          setTimeout(() => this.selectPage(this._selectedPageIndex,notify));
+          setTimeout(() => this.selectPage(this._selectedPageIndex,doNotify));
         }
     }
 }
