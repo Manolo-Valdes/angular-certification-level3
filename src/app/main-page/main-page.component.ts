@@ -13,7 +13,7 @@ export class MainPageComponent implements OnDestroy {
 
   constructor(private store:Store){
     this.sub = this.store.select(selectTimeOut).subscribe(
-      value => this._timeOut=value
+      value => this.timeOut=value
     );
   }
   ngOnDestroy(): void {
@@ -21,15 +21,12 @@ export class MainPageComponent implements OnDestroy {
   }
 
   private sub:Subscription;
-  private _timeOut:number
-  get timeOut():number
+  timeOut:number
+
+  updateTimeOut()
   {
-    return this._timeOut;
-  }
-  set timeOut(value:number)
-  {
-    this._timeOut=value;
-    this.store.dispatch(ZipCodeActions.updateTimeOut({timeOut:value}));
+    console.log('Setting new time out:',this.timeOut);
+    this.store.dispatch(ZipCodeActions.updateTimeOut({timeOut:this.timeOut}));
     // reset pooling, to use the new time Out value
     this.store.dispatch(ZipCodeActions.stopAllPooling());
   }

@@ -77,27 +77,4 @@ export const zipCodeReducer = createReducer(
         return {...store,timeOut:payload.timeOut}
     }
     )
-/*    ,on(ZipCodeActions.stopPoolingByIndex,
-        (store, payload)=>{
-            console.log('stopPoolingByIndex',payload.index);
-            if (payload.index>=0 && payload.index < store.records.length)
-                {
-                    const record = store.records.find((x,i) => i === payload.index);
-                    const pool = [...store.pool.filter(code=> code !== record.conditionsAndZip.zip
-                    )];
-                    console.log('stopPoolingByIndex',pool);
-                    return {...store,pool}
-                }
-            return store
-        }
-        )
-        ,on(ZipCodeActions.startPoolling,
-            (store, payload)=>{
-                console.log(`Adding ${payload.code} to pool`);
-                const pool = [...store.pool.filter(code=> code !== payload.code
-                ), payload.code];
-                return {...store,pool}
-            }
-            )
-   */ 
     );

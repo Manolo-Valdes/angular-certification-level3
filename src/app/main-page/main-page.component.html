@@ -2,8 +2,11 @@
 
   <app-zipcode-entry> </app-zipcode-entry>
   <app-current-conditions></app-current-conditions>
-  <div>
+  <div class="p-1">
     <label for="refreshTime">Cache Refresh time (in ms)</label>
-    <input type="number" name="timeout" [(ngModel)]="timeOut" placeholder="time out (ms)" class="form-control">
+    <input type="number" name="timeout" [(ngModel)]="timeOut" placeholder="time out (ms)">
+    <button class="btn btn-primary" (click)="updateTimeOut()" >
+      Update
+    </button>
   </div>
 </div>

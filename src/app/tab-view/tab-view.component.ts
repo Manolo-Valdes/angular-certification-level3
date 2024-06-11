@@ -31,12 +31,12 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
   }
   protected selectPage(index:number,notify:boolean): void {
     const snapshoot:TabPageComponent[] = this.pages.toArray();
-    console.log('selecting page:', index);
     this._selectedPageIndex=index;
     localStorage.setItem(this.INDEX_KEY,this._selectedPageIndex.toString());
     const lastIndex = snapshoot.findIndex(p=> p.active === true);
     if (lastIndex!==index)
     {
+      console.log('selecting page:', index);
       snapshoot.forEach((t,i) => (t.active = i===index));
       if (notify)
         this.activePageChanged.emit({previus:lastIndex,current:index})    

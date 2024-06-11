@@ -14,6 +14,8 @@ import {interval} from "rxjs";
 export class ZipCodeEffects{
 constructor(private actions$:Actions,private store:Store , private weatherService: WeatherService){}
 
+private ON_POOL_KEY:string='OnPoolingCode';
+
 addzipCodeLocation$ = createEffect(
     ()=>this.actions$.pipe(
         ofType(ZipCodeActions.add),
@@ -91,8 +93,6 @@ pooling$=createEffect(
     ()=>this.actions$.pipe(
         ofType(ZipCodeActions.startPoolling),
         map(payload=> payload.code),
-     //   mergeMap(code => this.store.select(selectIsOnPool(code)).pipe(
-     //       filter(isOnpool => isOnpool === false),
                 switchMap((code)=> this.store.select(selectTimeOut).pipe(
                 tap((time)=>console.log(`performing pool on:${code} every ${time}`)),
                 switchMap((time)=>
@@ -108,10 +108,10 @@ pooling$=createEffect(
                     ),
                     map(()=> ZipCodeActions.refreshRecord({code}) )  
                 ))    
-     //   ))
     ))
 )
 );
+
 
 
 startPoolByIndex$=createEffect(
@@ -121,6 +121,7 @@ startPoolByIndex$=createEffect(
         switchMap((index)=> this.store.select(selectCodeByIndex(index)).pipe(
             filter(code=> code!=null),
             tap(code=>console.log('start pooling of record with code:',code)),
+            tap((code=> localStorage.setItem(this.ON_POOL_KEY,code))),
             map (code=> ZipCodeActions.startPoolling({code}))
         ))
     )
@@ -143,9 +144,18 @@ stopAllPoolByIndex$=createEffect(
     ()=>this.actions$.pipe(
         ofType(ZipCodeActions.stopAllPooling),
         tap(()=>console.log('stop All pooling..')),
-        switchMap(()=> this.store.select(selectZipCodes).pipe(
-            tap(codes=> codes.forEach(code=> this.store.dispatch(ZipCodeActions.stopPooling({code})))),
-        ))
-    ), {dispatch:false}
+        tap(()=>{
+            const code = localStorage.getItem(this.ON_POOL_KEY);
+            this.store.dispatch( ZipCodeActions.stopPooling({code}));
+        }),
+
+//        switchMap(()=> this.store.select(selectZipCodes).pipe(
+  //          tap(codes=> codes.forEach(code=> this.store.dispatch(ZipCodeActions.stopPooling({code})))),
+    //    )),
+        map(()=>{
+            const code = localStorage.getItem(this.ON_POOL_KEY);
+            return ZipCodeActions.startPoolling({code});
+        })
+    )
 );
 }
