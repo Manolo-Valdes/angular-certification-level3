@@ -21,6 +21,7 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
 
 
   protected visible:boolean=false
+  private pageCount:number=0;
   private sub:Subscription;
   private _selectedPageIndex:number=-1;
   private INDEX_KEY:string='TabViewSelectedPageIndex';
@@ -65,10 +66,12 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
 
   private setUp(pages:QueryList<TabPageComponent>,notify:boolean):void
 {
+  const lastPageCount:number = this.pageCount;
   const wasVisible:boolean= this.visible;
-  console.log('pages was visible', wasVisible);
+  console.log('pages was:', wasVisible,lastPageCount);
+  this.pageCount = pages.length;
   this.visible = pages.length > 0;
-  console.log('pages visible', this.visible);
+  console.log('pages visible', this.visible, this.pageCount);
   if (this.visible)
     {
       const hasActivePage = pages.find((t) => t.active);
@@ -78,7 +81,7 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
           if (this._selectedPageIndex ===-1 || pages.length === 1)
             {
               this._selectedPageIndex=0;
-              doNotify=!wasVisible;
+              doNotify=!wasVisible || lastPageCount > 1;
             }
           setTimeout(() => this.selectPage(this._selectedPageIndex,doNotify));
         }
