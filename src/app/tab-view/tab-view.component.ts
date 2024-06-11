@@ -71,7 +71,7 @@ export class TabViewComponent implements AfterContentInit, OnDestroy  {
       const hasActivePage = pages.find((t) => t.active);
       if (!hasActivePage)
         {
-          if (this._selectedPageIndex ===-1)
+          if (this._selectedPageIndex ===-1 || pages.length === 1)
             {
               this._selectedPageIndex=0;
             }
