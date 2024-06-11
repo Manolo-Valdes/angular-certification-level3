@@ -1,43 +1,22 @@
 import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { ZipCodeActions } from './store/zipcode.actions';
 export const LOCATIONS : string = "locations";
 
 @Injectable()
 export class LocationService {
 
-  constructor() {
+  constructor(private store: Store) {
   }
 
-  getLocations():string[]{
-    let locString = localStorage.getItem(LOCATIONS);
-    if (locString)
-      {
-        const locations =JSON.parse(locString); 
-        console.log(locations);
-        return  locations.filter(l => l!==null);
-      }
-      return []
-  }
 
-  addLocation(zipcode : string)
+  addLocation(code : string)
   {
-    const locations = [...this.getLocations(),zipcode]
-    console.log(locations);
-    localStorage.setItem(LOCATIONS, JSON.stringify(locations));
+    console.log('Adding...',code);
+    this.store.dispatch(ZipCodeActions.add({code}))
   }
 
-  removeLocation(zipcode : string) {
-    let locations =this.getLocations();
-    let index = locations.indexOf(zipcode);
-    if (index !== -1){
-      locations.splice(index, 1);
-      localStorage.setItem(LOCATIONS, JSON.stringify(locations));
-    }
-  }
-  removeLocationByIndex(index : number) {
-    let locations =this.getLocations();
-    if (index !== -1 && locations.length > index){
-      locations.splice(index, 1);
-      localStorage.setItem(LOCATIONS, JSON.stringify(locations));
-    }
+  removeLocation(index : number) {
+    this.store.dispatch(ZipCodeActions.removeLocationByIndex({index}))
   }
 }
